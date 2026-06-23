@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
-from .models import FoodDonation
 from .forms import FoodDonationForm
 from .models import FoodDonation, FoodRequest
+
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 
 
 def donation_list(request):
@@ -80,3 +82,20 @@ def ngo_dashboard(request):
     }
 
     return render(request, 'donations/ngo_dashboard.html', context)
+
+def user_login(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user:
+            login(request, user)
+            return redirect("/")
+
+    return render(request, "donations/login.html")

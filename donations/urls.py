@@ -8,4 +8,6 @@ urlpatterns = [
     path('delete/<int:id>/', views.delete_donation, name='delete donation'),
     path('request/<int:id>/', views.request_food, name='request_food'),
     path('ngo-dashboard/', views.ngo_dashboard, name='ngo_dashboard'),
+    
+    path('login/', views.user_login, name='login'),
 ]
