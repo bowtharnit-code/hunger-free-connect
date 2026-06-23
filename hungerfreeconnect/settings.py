@@ -122,4 +122,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 #Login settings
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
