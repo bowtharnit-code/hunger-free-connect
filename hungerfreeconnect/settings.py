@@ -26,12 +26,10 @@ SECRET_KEY = 'django-insecure-lv%bjlk4a_6u@jpdy+ytzff67tva_u7qika6!za#r0jdlpn0_2
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    
     "hunger-free-connect.onrender.com",
-        "localhost",
-        "127.0.0.1",
+    "localhost",
+    "127.0.0.1",
 ]
-
 
 # Application definition
 
