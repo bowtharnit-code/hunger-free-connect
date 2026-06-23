@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import FoodDonation
 from .forms import FoodDonationForm
+from .models import FoodDonation, FoodRequest
 
 
 def donation_list(request):
@@ -60,3 +61,22 @@ def request_food(request, id):
     donation.save()
 
     return redirect('/')
+
+def ngo_dashboard(request):
+    total_donations = FoodDonation.objects.count()
+    total_requests = FoodRequest.objects.count()
+
+    pending_requests = FoodRequest.objects.filter(
+        status="Pending"
+    ).count()
+
+    recent_donations = FoodDonation.objects.order_by('-id')[:5]
+
+    context = {
+        'total_donations': total_donations,
+        'total_requests': total_requests,
+        'pending_requests': pending_requests,
+        'recent_donations': recent_donations,
+    }
+
+    return render(request, 'donations/ngo_dashboard.html', context)
