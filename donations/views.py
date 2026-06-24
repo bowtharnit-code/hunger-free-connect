@@ -99,3 +99,27 @@ def user_login(request):
             return redirect("/")
 
     return render(request, "donations/login.html")
+
+def signup(request):
+    if request.method == "POST":
+        try:
+            username = request.POST.get("username")
+            email = request.POST.get("email")
+            password = request.POST.get("password")
+
+            User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
+            )
+
+            return redirect("/login/")
+
+        except Exception as e:
+            return render(request, "donations/signup.html", {"error": str(e)})
+
+    return render(request, "donations/signup.html")
+
+def user_logout(request):
+    logout(request)
+    return redirect("/login/")
