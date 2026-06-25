@@ -50,8 +50,6 @@ body{
     color:white !important;
 }
 
-/* INGA PASTE PANNU */
-
 .btn-success,
 .btn-primary,
 .btn-warning,
@@ -65,7 +63,6 @@ body{
 <nav class="navbar navbar-expand-lg navbar-dark shadow">
     <div class="container">
         <a class="navbar-brand" href="/">
-            🍲 Hunger Free Connect
         </a>
 
         <a href="/logout/" class="btn btn-light">
@@ -77,8 +74,11 @@ body{
 <div class="container mt-4">
 
     <div class="hero">
-        <h1>🍲 Hunger Free Connect</h1>
-        <p class="lead">
+        <h1 style="font-size:60px; font-weight:bold; color:white;">
+            🍲 Hunger Free Connect
+        </h1>
+
+        <p style="font-size:30px; color:white;">
             Donate Food,Save Lives ❤
         </p>
 
@@ -148,6 +148,7 @@ body{
         <thead class="table-success">
             <tr>
                 <th>Food Name</th>
+                <th>Image</th>
                 <th>Quantity</th>
                 <th>Donor</th>
                 <th>Location</th>
@@ -163,6 +164,17 @@ body{
         <tr>
 
             <td>{{ donation.food_name }}</td>
+
+            <td>
+                {% if donation.food_image %}
+                    <img src="{{ donation.food_image.url }}"
+                         width="100"
+                         height="80">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+
             <td>{{ donation.quantity }}</td>
             <td>{{ donation.donor_name }}</td>
             <td>{{ donation.location }}</td>

@@ -1,31 +1,35 @@
 from django.shortcuts import render, redirect
 from .forms import FoodDonationForm
 from .models import FoodDonation, FoodRequest
-
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 
 def donation_list(request):
-    search = request.GET.get('search')
-
-    if search:
-        donations = FoodDonation.objects.filter(location__icontains=search)
-    else:
-        donations = FoodDonation.objects.all()
+    donations = FoodDonation.objects.all()
 
     return render(request, 'donations/list.html', {
         'donations': donations
     })
-
-
+    
 def add_donation(request):
     if request.method == 'POST':
-        form = FoodDonationForm(request.POST)
+        form = FoodDonationForm(request.POST, request.FILES)
 
         if form.is_valid():
-            form.save()
-            return redirect('/')
+            try:
+                form.save()
+                print("SUCCESS")
+                return redirect('/')
+            except Exception as e:
+                print("ERROR =", e)
+
+        else:
+            print(form.errors)
+
     else:
         form = FoodDonationForm()
 
@@ -38,11 +42,15 @@ def edit_donation(request, id):
     donation = FoodDonation.objects.get(id=id)
 
     if request.method == 'POST':
-        form = FoodDonationForm(request.POST, instance=donation)
-
+        form = FoodDonationForm(request.POST,request.FILES, instance=donation)
+        
         if form.is_valid():
-            form.save()
-            return redirect('/')
+            try:
+                form.save()
+                print("SAVE SUCCESS")
+                return redirect('/')
+            except Exception as e:
+                print("ERROR =", e)
     else:
         form = FoodDonationForm(instance=donation)
 
@@ -105,8 +113,14 @@ def user_logout(request):
     return redirect("/login/")
 
 def signup(request):
-    if request.method == "POST":
-        print("POST received")
-        return redirect("/login/")
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
 
-    return render(request, "donations/signup.html")
+        if form.is_valid():
+            form.save()
+            return redirect('/login/')
+
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'donations/signup.html', {'form': form})

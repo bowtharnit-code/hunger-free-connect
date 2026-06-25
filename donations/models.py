@@ -7,6 +7,18 @@ class FoodDonation(models.Model):
     phone = models.CharField(max_length=15)
     location = models.CharField(max_length=100)
     expiry_date = models.DateField()
+    
+    food_image =models.ImageField(upload_to='food_images/', blank=True, null=True)
+    
+    food_type = models.CharField(max_length=50, default="Veg")
+
+    description = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    receiver_name = models.CharField(max_length=100, blank=True)
+
+    receiver_phone = models.CharField(max_length=15, blank=True)
 
     STATUS_CHOICES = [
         ("Available", "Available"),

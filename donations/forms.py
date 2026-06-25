@@ -2,6 +2,13 @@ from django import forms
 from .models import FoodDonation
 
 class FoodDonationForm(forms.ModelForm):
+
     class Meta:
         model = FoodDonation
-        fields = ['food_name', 'quantity', 'donor_name', 'location', 'expiry_date']
+        fields = '__all__'
+
+    def clean_description(self):
+        description = self.cleaned_data.get('description')
+        if description is None:
+            return ''
+        return description
