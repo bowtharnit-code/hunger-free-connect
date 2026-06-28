@@ -7,34 +7,40 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.utils import timezone
 
 def donation_list(request):
-    donations = FoodDonation.objects.all()
+    today = timezone.now().date()
+
+    donations = FoodDonation.objects.filter(
+        expiry_date__gte=today
+    )
 
     return render(request, 'donations/list.html', {
         'donations': donations
     })
-    
+
+@login_required
 def add_donation(request):
-    if request.method == 'POST':
+
+    if request.method == "POST":
         form = FoodDonationForm(request.POST, request.FILES)
 
         if form.is_valid():
-            try:
-                form.save()
-                print("SUCCESS")
-                return redirect('/')
-            except Exception as e:
-                print("ERROR =", e)
+            donation = form.save(commit=False)
 
-        else:
-            print(form.errors)
+            donation.donor = request.user
+            donation.donor_name = request.user.username
+
+            donation.save()
+
+            return redirect("/")
 
     else:
         form = FoodDonationForm()
 
-    return render(request, 'donations/add_donation.html', {
-        'form': form
+    return render(request, "donations/add_donation.html", {
+        "form": form
     })
 
 
@@ -65,12 +71,22 @@ def delete_donation(request, id):
     messages.success(request, "Donation delete successfully!")
     return redirect('/') 
 
+@login_required
 def request_food(request, id):
     donation = FoodDonation.objects.get(id=id)
+
+    donation.receiver_name = request.user.username
+
+    if request.user.email:
+        donation.receiver_phone = request.user.email
+    else:
+        donation.receiver_phone = ""
+
     donation.status = "Requested"
+
     donation.save()
 
-    return redirect('/')
+    return redirect("/")
 
 def ngo_dashboard(request):
     total_donations = FoodDonation.objects.count()
@@ -113,14 +129,27 @@ def user_logout(request):
     return redirect("/login/")
 
 def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["password1"]
+        confirm = request.POST["password2"]
 
-        if form.is_valid():
-            form.save()
-            return redirect('/login/')
+        if password != confirm:
+            messages.error(request, "Passwords do not match")
+            return redirect("/signup/")
 
-    else:
-        form = UserCreationForm()
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect("/signup/")
 
-    return render(request, 'donations/signup.html', {'form': form})
+        User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        messages.success(request, "Account created successfully")
+        return redirect("/login/")
+
+    return render(request, "donations/signup.html")

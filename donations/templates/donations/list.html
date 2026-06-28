@@ -145,79 +145,90 @@ body{
 
     <table class="table table-bordered table-hover shadow">
 
-        <thead class="table-success">
-            <tr>
-                <th>Food Name</th>
-                <th>Image</th>
-                <th>Quantity</th>
-                <th>Donor</th>
-                <th>Location</th>
-                <th>Expiry</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-        {% for donation in donations %}
+    <thead class="table-success">
         <tr>
+            <th>Food Name</th>
+            <th>Image</th>
+            <th>Quantity</th>
+            <th>Donor</th>
+            <th>Location</th>
+            <th>Expiry</th>
+            <th>Status</th>
+            <th>Receiver</th>
+            <th>Action</th>
+        </tr>
+    </thead>
 
-            <td>{{ donation.food_name }}</td>
+    <tbody>
 
-            <td>
-                {% if donation.food_image %}
-                    <img src="{{ donation.food_image.url }}"
-                         width="100"
-                         height="80">
-                {% else %}
-                    No Image
-                {% endif %}
-            </td>
+    {% for donation in donations %}
+    <tr>
 
-            <td>{{ donation.quantity }}</td>
-            <td>{{ donation.donor_name }}</td>
-            <td>{{ donation.location }}</td>
-            <td>{{ donation.expiry_date }}</td>
+        <td>{{ donation.food_name }}</td>
 
-            <td>
-                {% if donation.status == "Available" %}
-                <span class="badge bg-success">
-                    Available
-                </span>
-                {% else %}
-                <span class="badge bg-danger">
-                    Requested
-                </span>
-                {% endif %}
-            </td>
+        <td>
+            {% if donation.food_image %}
+                <img src="{{ donation.food_image.url }}"
+                     width="100"
+                     height="80">
+            {% else %}
+                No Image
+            {% endif %}
+        </td>
 
-            <td>
+        <td>{{ donation.quantity }}</td>
+        <td>{{ donation.donor_name }}</td>
+        <td>{{ donation.location }}</td>
+        <td>{{ donation.expiry_date }}</td>
 
+        <td>
+            {% if donation.status == "Available" %}
+                <span class="badge bg-success">Available</span>
+            {% elif donation.status == "Requested" %}
+                <span class="badge bg-warning text-dark">Requested</span>
+            {% else %}
+                <span class="badge bg-primary">Collected</span>
+            {% endif %}
+        </td>
+
+        <td>
+            {% if donation.receiver_name %}
+                {{ donation.receiver_name }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+
+        <td>
+
+            {% if donation.status == "Available" %}
                 <a href="/request/{{ donation.id }}"
                    class="btn btn-warning btn-sm">
-                    Request
+                    Request Food
                 </a>
+            {% else %}
+                Requested
+            {% endif %}
 
-                <a href="/edit/{{ donation.id }}/"
-                   class="btn btn-primary btn-sm">
-                    Edit
-                </a>
+            <a href="/edit/{{ donation.id }}/"
+               class="btn btn-primary btn-sm">
+                Edit
+            </a>
 
-                <a href="/delete/{{ donation.id }}/"
-                   class="btn btn-danger btn-sm">
-                    Delete
-                </a>
+            <a href="/delete/{{ donation.id }}/"
+               class="btn btn-danger btn-sm">
+                Delete
+            </a>
 
-            </td>
+        </td>
 
-        </tr>
-        {% endfor %}
+    </tr>
+    {% endfor %}
 
-        </tbody>
+    </tbody>
 
-    </table>
+</table>
 
-</div>
+</d>
 
 {% endblock %}

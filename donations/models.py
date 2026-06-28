@@ -1,6 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class FoodDonation(models.Model):
+    donor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     food_name = models.CharField(max_length=100)
     quantity = models.IntegerField()
     donor_name = models.CharField(max_length=100)
