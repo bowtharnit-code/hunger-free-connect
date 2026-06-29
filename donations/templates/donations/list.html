@@ -179,7 +179,7 @@ body{
         <td>{{ donation.quantity }}</td>
         <td>{{ donation.donor_name }}</td>
         <td>{{ donation.location }}</td>
-        <td>{{ donation.expiry_date }}</td>
+        <td>{{ donation.expiry_date|date:"d/m/y"}}</td>
 
         <td>
             {% if donation.status == "Available" %}
